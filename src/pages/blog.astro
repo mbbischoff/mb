@@ -1,0 +1,151 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const allPosts = await getCollection('blog', ({ data }) => {
+  return import.meta.env.PROD ? data.draft !== true : true;
+});
+
+const sortedPosts = allPosts.sort((a, b) => {
+  return b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+});
+---
+
+<BaseLayout title="Blog" description="Recent blog posts and articles">
+  <main>
+    <div class="container">
+      <header>
+        <h1>Blog</h1>
+        <a href="/feed/" class="rss-link">RSS Feed</a>
+      </header>
+
+      {
+        sortedPosts.length === 0 ? (
+          <p class="no-posts">No posts yet. Check back soon!</p>
+        ) : (
+          <ul class="post-list">
+            {sortedPosts.map((post) => (
+              <li>
+                <article>
+                  <a href={`/${post.slug}/`}>
+                    <h2>{post.data.title}</h2>
+                    <p class="description">{post.data.description}</p>
+                    <time datetime={post.data.pubDate.toISOString()}>
+                      {new Intl.DateTimeFormat('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      }).format(post.data.pubDate)}
+                    </time>
+                  </a>
+                </article>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  main {
+    min-height: 100vh;
+    padding: 3rem 1rem;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .rss-link {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: opacity 0.2s;
+  }
+
+  .rss-link:hover {
+    opacity: 0.7;
+  }
+
+  .no-posts {
+    text-align: center;
+    color: var(--color-text);
+    opacity: 0.6;
+    padding: 3rem 0;
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .post-list li {
+    margin: 0;
+  }
+
+  article {
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    transition: background-color 0.2s;
+  }
+
+  article:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    article:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  article a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+    color: var(--color-text);
+  }
+
+  .description {
+    color: var(--color-text);
+    opacity: 0.8;
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+  }
+
+  time {
+    color: var(--color-text);
+    opacity: 0.6;
+    font-size: 0.9rem;
+  }
+</style>

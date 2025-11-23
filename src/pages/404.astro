@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="404 - Page Not Found" description="The page you're looking for doesn't exist">
+  <main>
+    <div class="container">
+      <h1>404</h1>
+      <p>Oops! The page you're looking for doesn't exist.</p>
+      <a href="/">Go back home</a>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+
+  .container {
+    max-width: 600px;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: clamp(4rem, 10vw, 8rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1;
+    color: var(--color-accent);
+  }
+
+  p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    color: var(--color-text);
+    opacity: 0.8;
+  }
+
+  a {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--color-accent);
+    color: white;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
+  }
+
+  a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  a:active {
+    transform: translateY(0);
+  }
+</style>
